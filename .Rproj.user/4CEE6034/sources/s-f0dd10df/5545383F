@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571770753488.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "5545383F",
+    "lastKnownWriteTime" : 1571770780,
+    "last_content_update" : 1571770780228,
+    "path" : "~/GitHub_Repos/Random_Forest_Utils/RandomForestUtils/R/RF_Utilities.R",
+    "project_path" : "R/RF_Utilities.R",
+    "properties" : {
+        "cursorPosition" : "149,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
