@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "5545383F",
-    "lastKnownWriteTime" : 1571771030,
-    "last_content_update" : 1571771030213,
+    "lastKnownWriteTime" : 1571771367,
+    "last_content_update" : 1571771367676,
     "path" : "~/GitHub_Repos/Random_Forest_Utils/RandomForestUtils/R/RF_Utilities.R",
     "project_path" : "R/RF_Utilities.R",
     "properties" : {
-        "cursorPosition" : "721,10",
-        "scrollLine" : "715"
+        "cursorPosition" : "156,2",
+        "scrollLine" : "147"
     },
     "relative_order" : 2,
     "source_on_save" : false,

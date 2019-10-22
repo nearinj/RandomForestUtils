@@ -152,9 +152,9 @@ COLORS <- c("#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46",
 #' Set number of cores to run random forest pipeline on
 #'
 #' @param x Number of cores to run pipeline. Defaults to 1.
-#' @examples
+#' @examples set_cores(10)
 #' @export
-#' set_cores(10)
+#'
 set_cores <- function(x){
   CORES_TO_USE <- x
   registerDoMC(cores=CORES_TO_USE)
