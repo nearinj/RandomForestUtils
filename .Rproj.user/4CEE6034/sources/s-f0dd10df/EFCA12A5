@@ -5,13 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "2019416261",
+    "hash" : "0",
     "id" : "EFCA12A5",
-    "lastKnownWriteTime" : 1571771223,
-    "last_content_update" : 1571771223,
+    "lastKnownWriteTime" : 1571771409,
+    "last_content_update" : 1571771409,
     "path" : "~/GitHub_Repos/Random_Forest_Utils/RandomForestUtils/NAMESPACE",
     "project_path" : "NAMESPACE",
     "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0"
     },
     "relative_order" : 4,
     "source_on_save" : false,
