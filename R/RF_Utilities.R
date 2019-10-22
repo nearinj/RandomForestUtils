@@ -153,6 +153,7 @@ COLORS <- c("#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46",
 #'
 #' @param x Number of cores to run pipeline. Defaults to 1.
 #' @examples
+#' @export
 #' set_cores(10)
 set_cores <- function(x){
   CORES_TO_USE <- x
@@ -404,7 +405,8 @@ rf_regression_pipeline <- function(feature_table, actual, SEED=1995, sampling=NU
 #' "Object[[4]] contains the list of important features from the best model selected from each data split"
 #' "Object[[5]] contains each caret random forest model from each data split"
 #' "This function will also write a csv with cross validation AUCS and test AUCS, to the given path as well as an RDS file that contains the resulting object from this function"
-
+#' @export
+#'
 Run_RF_Pipeline <- function(feature_table, classes, metric="ROC", sampling=NULL,
                            repeats=10, path, nmtry=6, ntree=1001,
                            nfolds=3, ncrossrepeats=10, pro=0.8, list_of_seeds){
@@ -491,7 +493,7 @@ Run_RF_Pipeline <- function(feature_table, classes, metric="ROC", sampling=NULL,
 #' "This function will also write a csv with cross validation AUCS and test AUCS, to the given path as well as an RDS file that contains the resulting object from this function"
 #' @description Runs a similar pipleline as Run_RF_Pipeline however takes in random scramblings of the class assignments for each sample (row in feature table). The results from this
 #' function can act as a null distrubition to compare models against.
-#'
+#' @export
 get_random_rf_results <- function(feature_table, list_of_scrambles, metric="ROC", sampling=NULL,
                                   repeats=10, path, nmtry=6, ntree=1001,
                                   nfolds=3, ncrossrepeats=10, pro=0.8, list_of_seeds){
@@ -568,7 +570,7 @@ get_random_rf_results <- function(feature_table, list_of_scrambles, metric="ROC"
 #' "Object[[4]] contains the list of important features from the best model selected from each data split"
 #' "Object[[5]] contains each caret random forest model from each data split"
 #' "This function will also write a csv with cross validation RMSE and test RMSE, to the given path as well as an RDS file that contains the resulting object from this function"
-
+#' @export
 Run_RF_Regression_Pipeline<- function(feature_table, actual, sampling=NULL,
                                   repeats, path, list_of_seeds){
   start_time <- Sys.time()
@@ -622,7 +624,7 @@ Run_RF_Regression_Pipeline<- function(feature_table, actual, sampling=NULL,
 #' @param impt_feat_list A list of dataframes containing the list of important features generated from running Run_RF_Pipeline.
 #' @return Returns a dataframe containing the mean, sd, max, and min decrease in accuracy for each feature over all of the random forest models that worked best during cross
 #' validation.
-#'
+#' @export
 Calc_mean_accuray_decrease <- function(impt_feat_list){
   pass=TRUE
   #make sure colnames for each impt_feat_table matches up
@@ -656,6 +658,7 @@ Calc_mean_accuray_decrease <- function(impt_feat_list){
 #'
 #' @param x A vector of values
 #' @return Retruns the mean, sd, min and max of X.
+#' @export
 Stats <- function(x){
   Mean <- mean(x, na.rm=TRUE)
   SD <- sd(x, na.rm=TRUE)
@@ -674,7 +677,7 @@ Stats <- function(x){
 #' @param title The title of the plot
 #' @return Returns a ggplot object that plots the testing AUC of each of the best cross-validated random forest models generated when data is split into
 #' test and cross-validation datasets. Note that the redline represents the mean value for the senstivity and specificity at each step tested during ROC calculation
-
+#' @export
 generate_ROC_curve <- function(RF_models, dataset, labels, title){
 
 
