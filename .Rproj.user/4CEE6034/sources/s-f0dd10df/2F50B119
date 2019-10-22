@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571770007303.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2F50B119",
+    "lastKnownWriteTime" : 1563593223,
+    "last_content_update" : 1563593223,
+    "path" : "~/GitHub_Repos/microbiome_helper/RF_Utilities.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "19,67",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
