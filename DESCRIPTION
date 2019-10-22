@@ -1,7 +1,7 @@
 Package: RandomForestUtils
 Type: Package
 Title: A Pipeline for Running Cross Validated Random Forest Models
-Version: 0.1.01
+Version: 0.1.02
 Author: Jacob Nearing
 Maintainer: Jacob Nearing <jacob.nearing@dal.ca>
 Description: This package contains the pipeline used to generate the random forest results for _____.
