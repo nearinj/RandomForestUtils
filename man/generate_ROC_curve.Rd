@@ -16,7 +16,7 @@ generate_ROC_curve(RF_models, dataset, labels, title)
 \item{title}{The title of the plot}
 }
 \value{
-Returns a ggplot object that plots the testing AUC of each of the best cross-validated random forest models generated when data is split into 
+Returns a ggplot object that plots the testing AUC of each of the best cross-validated random forest models generated when data is split into
 test and cross-validation datasets. Note that the redline represents the mean value for the senstivity and specificity at each step tested during ROC calculation
 }
 \description{

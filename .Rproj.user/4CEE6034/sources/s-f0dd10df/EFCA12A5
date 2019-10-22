@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571771229774.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2019416261",
+    "id" : "EFCA12A5",
+    "lastKnownWriteTime" : 1571771223,
+    "last_content_update" : 1571771223,
+    "path" : "~/GitHub_Repos/Random_Forest_Utils/RandomForestUtils/NAMESPACE",
+    "project_path" : "NAMESPACE",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_namespace"
+}

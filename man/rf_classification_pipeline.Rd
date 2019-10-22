@@ -18,13 +18,13 @@ rf_classification_pipeline(
 )
 }
 \arguments{
-\item{feature_table}{The feature table that contains the information to be input into the random forest classifier. Note that this 
+\item{feature_table}{The feature table that contains the information to be input into the random forest classifier. Note that this
 table should not include information about the classes that are being predicted.}
 
 \item{classes}{A vector that represents the classes that each sample (row) in the feature table represents. This can be coded as
 Case (level 1 factor) and control (level 2 factor). Make sure the factor levels are correct with using AUPRC or results will not always be correct.}
 
-\item{metric}{A string that indicates whether the pipeline should use AUROC or AUPRC. For AUROC set metric="ROC". For AUPRC set metric="PR". 
+\item{metric}{A string that indicates whether the pipeline should use AUROC or AUPRC. For AUROC set metric="ROC". For AUPRC set metric="PR".
 Defaults to "ROC".}
 
 \item{ntree}{An integer that represents the number of trees that you want to use during randoom forest construction. Defaults to 999.}

@@ -12,6 +12,3 @@ set_cores(x)
 \description{
 Set number of cores to run random forest pipeline on
 }
-\examples{
-set_cores(10)
-}

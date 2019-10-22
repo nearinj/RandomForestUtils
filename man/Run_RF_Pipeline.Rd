@@ -20,13 +20,13 @@ Run_RF_Pipeline(
 )
 }
 \arguments{
-\item{feature_table}{The feature table that contains the information to be input into the random forest classifier. Note that this 
+\item{feature_table}{The feature table that contains the information to be input into the random forest classifier. Note that this
 table should not include information about the classes that are being predicted.}
 
 \item{classes}{A vector that represents the classes that each sample (row) in the feature table represents. This can be coded as
 Case (level 1 factor) and control (level 2 factor). Make sure the factor levels are correct with using AUPRC or results will not always be correct.}
 
-\item{metric}{A string that indicates whether the pipeline should use AUROC or AUPRC. For AUROC set metric="ROC". For AUPRC set metric="PR". 
+\item{metric}{A string that indicates whether the pipeline should use AUROC or AUPRC. For AUROC set metric="ROC". For AUPRC set metric="PR".
 Defaults to "ROC".}
 
 \item{sampling}{A string indicating that type of sampling that should be done incase of inbalanced class designs. Options include: "up", "down" "SMOTE" and NULL.}
@@ -51,7 +51,7 @@ is calculated as follows:  mtry <- round(seq(1, number_of_features/3, length=nmt
 \item{SEED}{The random seed used to split the samples during cross validation. Defaults to 1995.}
 }
 \value{
-This function returns a list with the following characteristics: 
+This function returns a list with the following characteristics:
 "Object[[1]] contains all the median cross validation AUCS from each data split using the best mtry value"
 "Object[[2]] contains all the test AUC values from each data split"
 "Object[[3]] contains all the tested mtry values and the median ROC for each from each data split"
