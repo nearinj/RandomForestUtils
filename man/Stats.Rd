@@ -10,7 +10,7 @@ Stats(x)
 \item{x}{A vector of values}
 }
 \value{
-Retruns the mean, sd, min and max of X.
+Returns the mean, sd, min and max of X.
 }
 \description{
 Stats

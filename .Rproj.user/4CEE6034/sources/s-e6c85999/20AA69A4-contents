@@ -5,7 +5,7 @@ Version: 0.1.02
 Author: Jacob Nearing
 Maintainer: Jacob Nearing <jacob.nearing@dal.ca>
 Description: This package contains the pipeline used to generate the random forest results for _____.
-License: GNU General Public License v3.0
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.99.9001
@@ -18,4 +18,8 @@ Imports:
   tidyverse, 
   PRROC, 
   MLmetrics, 
-  reshape2
+  reshape2,
+  forcats
+Suggests: 
+    knitr
+VignetteBuilder: knitr

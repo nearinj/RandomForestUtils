@@ -4,9 +4,6 @@
 # Title: Script to run the main RF pipeline
 #####################################################################
 
-CORES_TO_USE <- 1
-
-
 COLORS <- c("#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46",
             "#008941", "#006FA6", "#A30059",
             "#FFDBE5", "#7A4900", "#0000A6", "#63FFAC", "#B79762",
@@ -147,7 +144,7 @@ COLORS <- c("#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46",
             "#69255C", "#D3BFFF", "#4A5132", "#7E9285", "#77733C", "#E7A0CC", "#51A288", "#2C656A",
             "#4D5C5E", "#C9403A", "#DDD7F3", "#005844", "#B4A200", "#488F69", "#858182", "#D4E9B9",
             "#3D7397", "#CAE8CE", "#D60034", "#AA6746", "#9E5585", "#BA6200")
-
+#######
 
 #' Set number of cores to run random forest pipeline on
 #'
@@ -157,7 +154,7 @@ COLORS <- c("#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46",
 #'
 set_cores <- function(x){
   CORES_TO_USE <- x
-  registerDoMC(cores=CORES_TO_USE)
+  doMC::registerDoMC(cores=CORES_TO_USE)
 }
 
 
@@ -193,11 +190,11 @@ rf_classification_pipeline <- function(feature_table, classes, metric="ROC",
 
   ### Head function will need to pass in SEED values to run 100 data partitions or it won't be reproducible
   set.seed(SEED)
-  train_index <- createDataPartition(classes, p=pro, list=FALSE)
-  message(train_index)
+  train_index <- caret::createDataPartition(classes, p=pro, list=FALSE)
+  message(train_index[,1])
   ## make training feature and class tables
-  train_classes <- classes[train_index]
-  train_features <- feature_table[train_index,]
+  train_classes <- classes[train_index[,1]]
+  train_features <- feature_table[train_index[,1],]
   ## make test feature and class tables
   test_classes <- classes[-train_index]
   test_features <- feature_table[-train_index,]
@@ -218,24 +215,26 @@ rf_classification_pipeline <- function(feature_table, classes, metric="ROC",
     seeds[[i]] <- sample.int(n=1000, mtry_num)
   }
   seeds[seeds_len] <- sample.int(1000, 1)
+
+  responses <- c("Case", "Control")
   if(metric=="PR"){
     message("Metric to test on is AUPRC")
-    cv <- trainControl(method="repeatedcv",
+    cv <- caret::trainControl(method="repeatedcv",
                        number=folds,
                        index=cvIndex,
                        returnResamp = "final",
-                       summaryFunction=prSummary,
+                       summaryFunction=caret::prSummary,
                        classProbs=TRUE,
                        savePredictions = TRUE,
                        seeds=seeds)
     metric="AUC"
     }else if(metric=="ROC"){
-      cv <- trainControl(method="repeatedcv",
+      cv <- caret::trainControl(method="repeatedcv",
                          number=folds,
                          index=cvIndex,
                          returnResamp = "final",
                          classProbs=TRUE,
-                         summaryFunction=twoClassSummary,
+                         summaryFunction=caret::twoClassSummary,
                          savePredictions = TRUE,
                          seeds=seeds)
       metric <- "ROC"
@@ -255,7 +254,8 @@ rf_classification_pipeline <- function(feature_table, classes, metric="ROC",
   ## train the model
   message("Training model")
   set.seed(SEED)
-  trained_model <- train(train_features, train_classes,
+
+  trained_model <- caret::train(train_features, train_classes,
                          method="rf",
                          trControl=cv,
                          metric=metric,
@@ -266,9 +266,9 @@ rf_classification_pipeline <- function(feature_table, classes, metric="ROC",
   message("Finished training model")
   # Mean AUC value over repeates of the best hyperparameter during training
   if(metric=="ROC"){
-    cv_auc <- getTrainPerf(trained_model)$TrainROC
+    cv_auc <- caret::getTrainPerf(trained_model)$TrainROC
   }else if(metric=="AUC"){
-    cv_auc <- getTrainPerf(trained_model)$TrainAUC
+    cv_auc <- caret::getTrainPerf(trained_model)$TrainAUC
   }
 
   ### get important features for later validation...
@@ -276,16 +276,17 @@ rf_classification_pipeline <- function(feature_table, classes, metric="ROC",
 
   ## predict on the test set and get predicted probabilities
   rpartProbs <- predict(trained_model, test_features, type="prob")
+
+  matriz <- cbind(test_classes, predict(trained_model, test_features, type="prob"), predict(trained_model, test_features))
+  names(matriz) <- c("obs", levels(test_classes), "pred")
+
   if(metric=="ROC"){
-    ### critcal that factor levels are correct for this to calculate....
-    test_roc <- pROC::roc(ifelse(test_classes=="Case", 1, 0), rpartProbs[[2]])
-    test_auc <- test_roc$auc
+    roc_test_stats <- caret::twoClassSummary(data=matriz, lev=levels(test_classes))
+    test_auc <- roc_test_stats[1]
   }else if(metric=="AUC"){
-    ######### this doesn't compute right needs to be fixed!!!!
-    #get probs for postive class
-    matriz <- cbind(test_classes, predict(trained_model, test_features, type="prob"), predict(trained_model, test_features))
-    names(matriz) <- c("obs", levels(test_classes), "pred")
-    pr_test_stats <- prSummary(matriz, levels(test_classes))
+
+
+    pr_test_stats <- caret::prSummary(data=matriz, lev=levels(test_classes))
     test_auc <- pr_test_stats[1]
   }else{
     message("metric not used by this pipeline")
@@ -450,7 +451,7 @@ Run_RF_Pipeline <- function(feature_table, classes, metric="ROC", sampling=NULL,
   write.csv(auc_data, file=paste0(path,"_aucs.csv"))
 
   #take results list and rbind it
-  cv_results <- bind_rows(results_total)
+  cv_results <- dplyr::bind_rows(results_total)
   write.csv(cv_results, file=paste0(path,"_cv_results.csv"))
 
   ret_features <- do.call(cbind, important_features)
@@ -540,7 +541,7 @@ get_random_rf_results <- function(feature_table, list_of_scrambles, metric="ROC"
   write.csv(auc_data, file=paste0(path,"_aucs.csv"))
 
   #take results list and rbind it
-  cv_results <- bind_rows(results_total)
+  cv_results <- dplyr::bind_rows(results_total)
   write.csv(cv_results, file=paste0(path,"_cv_results.csv"))
 
   ret_features <- do.call(cbind, important_features)
@@ -657,7 +658,7 @@ Calc_mean_accuray_decrease <- function(impt_feat_list){
 #' Stats
 #'
 #' @param x A vector of values
-#' @return Retruns the mean, sd, min and max of X.
+#' @return Returns the mean, sd, min and max of X.
 #' @export
 Stats <- function(x){
   Mean <- mean(x, na.rm=TRUE)
@@ -729,8 +730,8 @@ generate_ROC_curve <- function(RF_models, dataset, labels, title){
 
   #turn data into long form
 
-  SENS_melt <- melt(ROC_curve_data[[1]])
-  SPEC_melt <- melt(ROC_curve_data[[2]])
+  SENS_melt <- reshape2::melt(ROC_curve_data[[1]])
+  SPEC_melt <- reshape2::melt(ROC_curve_data[[2]])
 
   if(all.equal(SENS_melt$Var1, SPEC_melt$Var1) & all.equal(SENS_melt$Var2, SPEC_melt$Var2)){
     SENS_melt$Value2 <- SPEC_melt$value
@@ -758,5 +759,21 @@ generate_ROC_curve <- function(RF_models, dataset, labels, title){
 }
 
 
+#' remove_rare
+#' @param table The feature table to be filtered, (note rownames=features, columns=samples)
+#' @param cutoff_pro The precent of samples a feature must be found in in order to be kept.
+#' @return A new table with any features that were below the cutoff proportion removed.
+#' @export
+remove_rare <- function( table , cutoff_pro ) {
+  row2keep <- c()
+  cutoff <- ceiling( cutoff_pro * ncol(table) )
+  for ( i in 1:nrow(table) ) {
+    row_nonzero <- length( which( table[ i , ]  > 0 ) )
+    if ( row_nonzero > cutoff ) {
+      row2keep <- c( row2keep , i)
+    }
+  }
+  return( table [ row2keep , , drop=F ])
+}
 
 

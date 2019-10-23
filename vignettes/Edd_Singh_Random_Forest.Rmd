@@ -1,0 +1,159 @@
+---
+title: "Edd_Singh_Random_Forest"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Edd_Singh_Random_Forest}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(RandomForestUtils)
+```
+
+First we will load in the data and remove samples that have less than 1000 reads 
+```{r}
+
+data("Edd_Singh_data")
+indexs_to_keep <- which(Edd_Singh_data[[2]]$total_reads >= 1000)
+
+clean_Genus_values <- Edd_Singh_data[[1]][,indexs_to_keep]
+clean_metadata <- Edd_Singh_data[[2]][indexs_to_keep,]
+rownames(clean_metadata) <- gsub("-","\\.",rownames(clean_metadata))
+all.equal(colnames(clean_Genus_values), rownames(clean_metadata))
+
+dim(clean_Genus_values)
+
+```
+
+We can see that we have a total of 153 Genera and 272 Samples. 
+Next we will remove any rare genera that are only found in a few individuals.
+
+```{r}
+
+non_rare_genera <- remove_rare(clean_Genus_values, 0.2)
+dim(non_rare_genera)
+```
+
+Removing genera that are not found in atleast 20% of people brings the number of genera down from 153 to 58.
+
+We will convert the raw count numbers to relative abundances to be used for feature input.
+```{r}
+non_rare_genera_RA <- sweep(non_rare_genera, 2, colSums(non_rare_genera), '/')
+head(colSums(non_rare_genera_RA))
+
+```
+
+Our Random Forest RF Pipeline expects samples to be encoded as rows and features to be encoded as columns so we will need to flip our genera table around.
+We will also need to set up the classes that we will be classifying using our pipeline. In this case we will be using the status of the individual (Healthy vs. Patient)
+In our setup we will treat Healthy people as controls and Patients as cases. This means we will need to recode the factor levels for this category. This will be important if we plan to use precision recall curves to evaulate our model.
+```{r}
+input_features <- data.frame(t(non_rare_genera_RA))
+classes <- clean_metadata$Status
+head(classes)
+
+classes <- factor(classes, levels(classes)[c(2,1)])
+head(classes)
+
+classes <- forcats::fct_recode(classes, Control="Healthy", Case="Patient")
+classes
+
+clean_metadata$classes <- classes
+```
+
+
+We are now ready to run the Pipeline.
+
+```{r}
+SAVE_PATH <- "~/etc/my_Tutorials/RF_tutorial/testing/"
+set.seed(1995)
+seeds <- sample.int(10000000, 10)
+RandomForestUtils::set_cores(20)
+rf_results <- RandomForestUtils::Run_RF_Pipeline(feature_table = input_features,
+                                                 classes=classes,
+                                                 metric = "ROC",
+                                                 sampling=NULL,
+                                                 repeats=10,
+                                                 path=SAVE_PATH,
+                                                 nmtry=4,
+                                                 ntree=1001,
+                                                 nfolds=3,
+                                                 ncrossrepeats = 5,
+                                                 pro=0.8,
+                                                 list_of_seeds = seeds)
+
+
+```
+
+
+We can now inspect the results of our pipeline to see how well our classifcation model is working. Lets look at the median AUC of the best model during cross validation and the AUC of the final models trained using the "best" hyperparameter on each data split.
+
+
+```{r}
+boxplot(rf_results[[1]], rf_results[[2]], names=c("Cross Validation AUC", "Testing AUC"))
+
+```
+
+Now we will re-run the pipeline but scrambling the assignment of case and control for each sample. This should give us a good understanding of how well our model would work by "chance".
+
+
+```{r}
+scrambled_classes <- list()
+set.seed(1880)
+for(i in 1:10){
+  scrambled_classes[[i]] <- sample(classes)
+}
+SAVE_PATH <- "~/etc/my_Tutorials/RF_tutorial/testing/"
+random_resullts <- get_random_rf_results(feature_table = input_features,
+                                         list_of_scrambles = scrambled_classes,
+                                         metric = "ROC",
+                                         sampling = NULL,
+                                         repeats = 10,
+                                         path=SAVE_PATH,
+                                         nmtry=4,
+                                         ntree=1001,
+                                         nfolds = 3,
+                                         ncrossrepeats = 5,
+                                         pro = 0.8,
+                                         list_of_seeds = seeds)
+
+```
+
+
+Now we can compare the test AUCs from the model trained on the real class labels and the model trained on scrambled train labels. This will gives us a reallly good idea about how well our model is preforming. 
+
+```{r}
+
+boxplot(rf_results[[2]], random_resullts[[2]], names=c("Test AUROC Real", "Test AUROOC Random"))
+
+```
+
+We can see that our model performs significantly better then a model trained on random labellings. 
+
+We can also use scripts in this package to generate a AUROC for each test and training data splits. Note that the paramter labels is a dataframe that contains the sample names as rows and a column that indicates the class of each sample as either "Case" or "Control"
+
+```{r}
+ROC_plot <- generate_ROC_curve(RF_models = rf_results[[5]], dataset=input_features, labels=clean_metadata, title = "AUROC of Enteric Disease Classifcation")
+ROC_plot
+
+```
+
+
+
+The last thing that we can look at is feature importance. This will give us an idea of what genera in the dataset are most predictive. 
+
+```{r}
+Feature_importance_scores <- Calc_mean_accuray_decrease(rf_results[[4]])
+
+
+knitr::kable(Feature_importance_scores[1:10, c("Mean", "SD", "Min", "Max")])
+```
+
+Here we can see that the most predictive feature over all of the datasplits is the genus Clostridium_IV.
