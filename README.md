@@ -3,14 +3,14 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of RandomForestUtils is to ...
+The goal of RandomForestUtils is to create a reproducible Random Forest pipeline that allows indivivudals to get accruacate performance metrics for classifcation and regression. The pipeline uses data splitting and cross validation to ensure that the models being tested are not overfit.
 
 ## Installation
 
-You can install the released version of RandomForestUtils from [CRAN](https://CRAN.R-project.org) with:
+You can install this R package using devtools with:
 
 ``` r
-install.packages("RandomForestUtils")
+devtools::install_github("nearinj/RandomForestUtils")
 ```
 
 ## Example

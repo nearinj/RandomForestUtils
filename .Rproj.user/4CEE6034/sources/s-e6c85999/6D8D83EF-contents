@@ -75,7 +75,7 @@ We are now ready to run the Pipeline.
 SAVE_PATH <- "~/etc/my_Tutorials/RF_tutorial/testing/"
 set.seed(1995)
 seeds <- sample.int(10000000, 10)
-RandomForestUtils::set_cores(20)
+RandomForestUtils::set_cores(1)
 rf_results <- RandomForestUtils::Run_RF_Pipeline(feature_table = input_features,
                                                  classes=classes,
                                                  metric = "ROC",
