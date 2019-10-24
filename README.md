@@ -37,6 +37,8 @@ This final step is where the test dataset comes into play. During this step you 
 
 This is a basic example of how to use the pipeline to run a RandomForest classifcation problem. This dataset that comes along with the package was published in [2015 by Singh et al.,](https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-015-0109-2) who were interested in looking a differences between healthy individuals and those with enteric infections. Some pre-processing of the data is required before it can be used! 
 
+**Note that if you build the vignettes for this package there is a provided example of data analysis using this pipeline**
+
 ``` r
 library(RandomForestUtils)
 
