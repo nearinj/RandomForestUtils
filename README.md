@@ -13,9 +13,29 @@ You can install this R package using devtools with:
 devtools::install_github("nearinj/RandomForestUtils")
 ```
 
+## Pipeline Overview
+The general workflow falls into three different steps outlined below
+
+**Step 1: Splitting data into training and test datasets**
+This is a critical step to evaluating model performance and to avoid reporting the performance of models that are grossly over fit. The idea here is that you take your dataset and split them up into training data and testing data. This split then allows you to determine how well your model would perform on data that it has never seen before which is important to evaluate whether or not your model is over fit. Generally this split is done so that the majority of data is kept for training and a small subset is used for testing purposes. In this tutorial we will use 20% of the data for testing and 80% for training. 
+
+**Step 2: Model Training**
+Once you have your training dataset the next step is begin training your model. There are two parameters that can be changed in this step for Random Forest modelling; the number of trees and the number of randomly chosen variables to be tested at each split within the trees (mtry). 
+
+In general as the number of trees increase the performance of the model will increase until a plateau is reached. This plateau can vary between data sets and sometimes its worth trying multiple numbers to find the optimal number of trees. You can always set a very large number for this value and not worry about this issue, however, this will significantly increase the run time of your models.
+
+Determining the best mtry (the only hyper-parameter in Random Forest) is a bit more difficult because it varies from dataset to dataset. A good starting point is usually the square root of the number of features, however, this is not always the optimal solution. If you set up mtry equal to the number of features within the dataset then you end up with trees in your model that are all very similar to one another (which sometimes can be helpful but is generally not the optimal solution either). In order to find the best mtry parameter for your dataset you will need to do multiple cross-validations. Luckily the scripts presented in this tutorial make this task fairly straight-forward. 
+
+Cross-validation is one of many different methods that can be used to combat over fitting when tuning hyper parameters such as mtry. In this case we will focus of k-fold repeated cross validation. K-fold cross validation works by taking the training dataset supplied to the model algorithm and further splitting them up into k even numbered data sets. A model is then trained on each dataset and validated on the other data sets. This helps further protect against picking hyper-parameters that just happen to work really well on the split you made between training and test. Generally this process is then repeated n times to determine which mtry value works best overall and then retraining a model on the entire set of training data the model was supplied with.
+
+
+**Step 3 Model Validation**
+This final step is where the test dataset comes into play. During this step you will take the final model from training and use it to make classifications (for categorical variables) or regressions (for continuous variables) on the hold out test set. This will allow you to determine how well you can expect your model to work on data that it has never come across before. This is important when reporting things such as how well your model can predict disease outcome.
+
+
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example of how to use the pipeline to run a RandomForest classifcation problem. This dataset that comes along with the package was published in [2015 by Singh et al.,](https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-015-0109-2) who were interested in looking a differences between healthy individuals and those with enteric infections. Some pre-processing of the data is required before it can be used! 
 
 ``` r
 library(RandomForestUtils)
@@ -33,11 +53,6 @@ dim(clean_Genus_values)
 
 non_rare_genera <- remove_rare(clean_Genus_values, 0.2)
 dim(non_rare_genera)
-
-#non_rare_genera_RA <- sweep(non_rare_genera, 2, colSums(non_rare_genera), '/')
-#head(colSums(non_rare_genera_RA))
-
-#input_features <- data.frame(t(non_rare_genera_RA))
 
 input_features <- data.frame(apply(non_rare_genera +1, 2, function(x) {log(x) - mean(log(x))}))
 input_features <- data.frame(t(input_features))
