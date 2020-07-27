@@ -3,7 +3,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of RandomForestUtils is to create a reproducible Random Forest pipeline that allows indivivudals to get accruacate performance metrics for classifcation and regression. The pipeline uses data splitting and cross validation to ensure that the models being tested are not overfit.
+The goal of RandomForestUtils is to create a reproducible Random Forest pipeline that allows indivivudals to get accruacate performance metrics for classifcation. The pipeline uses data splitting and cross validation to ensure that the models being tested are not overfit.
 
 **The regression pipeline has not been validated and for now I would suggest using caret to train and test any random forest regression models you would like to create**
 
