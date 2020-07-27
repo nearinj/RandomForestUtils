@@ -571,7 +571,7 @@ get_random_rf_results <- function(feature_table, list_of_scrambles, metric="ROC"
 #' "Object[[4]] contains the list of important features from the best model selected from each data split"
 #' "Object[[5]] contains each caret random forest model from each data split"
 #' "This function will also write a csv with cross validation RMSE and test RMSE, to the given path as well as an RDS file that contains the resulting object from this function"
-#' @export
+#'
 Run_RF_Regression_Pipeline<- function(feature_table, actual, sampling=NULL,
                                   repeats, path, list_of_seeds){
   start_time <- Sys.time()
