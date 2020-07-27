@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1588884435755.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "38565300",
+    "lastKnownWriteTime" : 1588886072,
+    "last_content_update" : 1588886072099,
+    "path" : "~/GitHub_Repos/Hackathon Testing/Run_Corncob.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "81,76",
+        "scrollLine" : "55",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

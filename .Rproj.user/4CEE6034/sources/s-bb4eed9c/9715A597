@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1595871420327.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "9715A597",
+    "lastKnownWriteTime" : 1587503426,
+    "last_content_update" : 1587503426,
+    "path" : "~/GitHub_Repos/Random_Forest_Utils/RandomForestUtils/vignettes/Edd_Singh_Random_Forest.Rmd",
+    "project_path" : "vignettes/Edd_Singh_Random_Forest.Rmd",
+    "properties" : {
+        "cursorPosition" : "156,0",
+        "scrollLine" : "130"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
